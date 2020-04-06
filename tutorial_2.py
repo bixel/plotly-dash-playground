@@ -10,12 +10,12 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 
-data = awkward.load('./Bs2DsPi_2018_Chunk.awkd')
+data = awkward.load('./chunk_combined.awkd')
 hist = bh.Histogram(
-    bh.axis.Regular(1000, 4800, 7000, metadata=dict(var='lab0__M')),
+    bh.axis.Regular(1000, 4800, 7000, metadata=dict(var='lab0_M')),
     bh.axis.Regular(1000, 1900, 2100, metadata=dict(var='lab2_M')),
 )
-hist.fill(data['lab0__M'], data['lab2_M'])
+hist.fill(data['lab0_M'], data['lab2_M'])
 variable_map = {meta['var']: i for i, meta in enumerate(hist.axes.metadata)}
 
 binning = 1
@@ -43,7 +43,7 @@ app.layout = html.Div(children=[
 
     html.Div(children=[
         dcc.Graph(
-            id='lab0__M-graph',
+            id='lab0_M-graph',
             figure={}
         ),
     ]),
@@ -107,13 +107,13 @@ def update_histogram(variable, rebin, ranges):
 
 @app.callback(
     [
-        Output(component_id='lab0__M-graph', component_property='figure'),
+        Output(component_id='lab0_M-graph', component_property='figure'),
         Output(component_id='lab2_M-graph', component_property='figure'),
         Output(component_id='selected-data', component_property='children'),
     ],
     [
         Input(component_id='binning-slider', component_property='value'),
-        Input(component_id='lab0__M-graph', component_property='selectedData'),
+        Input(component_id='lab0_M-graph', component_property='selectedData'),
         Input(component_id='lab2_M-graph', component_property='selectedData'),
     ]
 )
@@ -135,7 +135,7 @@ def printSelectedData(binning, *selectedData):
         else:
             ranges.append((None, None))
     return (
-        update_histogram('lab0__M', rebin=binning, ranges=ranges),
+        update_histogram('lab0_M', rebin=binning, ranges=ranges),
         update_histogram('lab2_M', rebin=binning, ranges=ranges),
         json.dumps(selectedData, indent=2)
     )
